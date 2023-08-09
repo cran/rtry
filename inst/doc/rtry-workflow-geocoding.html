@@ -14,25 +14,38 @@
 
 <title>Workflow for geocoding using rtry</title>
 
-<script src="data:application/javascript;base64,Ly8gUGFuZG9jIDIuOSBhZGRzIGF0dHJpYnV0ZXMgb24gYm90aCBoZWFkZXIgYW5kIGRpdi4gV2UgcmVtb3ZlIHRoZSBmb3JtZXIgKHRvCi8vIGJlIGNvbXBhdGlibGUgd2l0aCB0aGUgYmVoYXZpb3Igb2YgUGFuZG9jIDwgMi44KS4KZG9jdW1lbnQuYWRkRXZlbnRMaXN0ZW5lcignRE9NQ29udGVudExvYWRlZCcsIGZ1bmN0aW9uKGUpIHsKICB2YXIgaHMgPSBkb2N1bWVudC5xdWVyeVNlbGVjdG9yQWxsKCJkaXYuc2VjdGlvbltjbGFzcyo9J2xldmVsJ10gPiA6Zmlyc3QtY2hpbGQiKTsKICB2YXIgaSwgaCwgYTsKICBmb3IgKGkgPSAwOyBpIDwgaHMubGVuZ3RoOyBpKyspIHsKICAgIGggPSBoc1tpXTsKICAgIGlmICghL15oWzEtNl0kL2kudGVzdChoLnRhZ05hbWUpKSBjb250aW51ZTsgIC8vIGl0IHNob3VsZCBiZSBhIGhlYWRlciBoMS1oNgogICAgYSA9IGguYXR0cmlidXRlczsKICAgIHdoaWxlIChhLmxlbmd0aCA+IDApIGgucmVtb3ZlQXR0cmlidXRlKGFbMF0ubmFtZSk7CiAgfQp9KTsK"></script>
+<script>// Pandoc 2.9 adds attributes on both header and div. We remove the former (to
+// be compatible with the behavior of Pandoc < 2.8).
+document.addEventListener('DOMContentLoaded', function(e) {
+  var hs = document.querySelectorAll("div.section[class*='level'] > :first-child");
+  var i, h, a;
+  for (i = 0; i < hs.length; i++) {
+    h = hs[i];
+    if (!/^h[1-6]$/i.test(h.tagName)) continue;  // it should be a header h1-h6
+    a = h.attributes;
+    while (a.length > 0) h.removeAttribute(a[0].name);
+  }
+});
+</script>
 
 <style type="text/css">
-  code{white-space: pre-wrap;}
-  span.smallcaps{font-variant: small-caps;}
-  span.underline{text-decoration: underline;}
-  div.column{display: inline-block; vertical-align: top; width: 50%;}
-  div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
-  ul.task-list{list-style: none;}
-    </style>
+code{white-space: pre-wrap;}
+span.smallcaps{font-variant: small-caps;}
+span.underline{text-decoration: underline;}
+div.column{display: inline-block; vertical-align: top; width: 50%;}
+div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+ul.task-list{list-style: none;}
+</style>
+
 
 
 <style type="text/css">
-  code {
-    white-space: pre;
-  }
-  .sourceCode {
-    overflow: visible;
-  }
+code {
+white-space: pre;
+}
+.sourceCode {
+overflow: visible;
+}
 </style>
 <style type="text/css" data-origin="pandoc">
 pre > code.sourceCode { white-space: pre; position: relative; }
@@ -50,55 +63,54 @@ pre > code.sourceCode { white-space: pre-wrap; }
 pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
 }
 pre.numberSource code
-  { counter-reset: source-line 0; }
+{ counter-reset: source-line 0; }
 pre.numberSource code > span
-  { position: relative; left: -4em; counter-increment: source-line; }
+{ position: relative; left: -4em; counter-increment: source-line; }
 pre.numberSource code > span > a:first-child::before
-  { content: counter(source-line);
-    position: relative; left: -1em; text-align: right; vertical-align: baseline;
-    border: none; display: inline-block;
-    -webkit-touch-callout: none; -webkit-user-select: none;
-    -khtml-user-select: none; -moz-user-select: none;
-    -ms-user-select: none; user-select: none;
-    padding: 0 4px; width: 4em;
-    color: #aaaaaa;
-  }
-pre.numberSource { margin-left: 3em; border-left: 1px solid #aaaaaa;  padding-left: 4px; }
+{ content: counter(source-line);
+position: relative; left: -1em; text-align: right; vertical-align: baseline;
+border: none; display: inline-block;
+-webkit-touch-callout: none; -webkit-user-select: none;
+-khtml-user-select: none; -moz-user-select: none;
+-ms-user-select: none; user-select: none;
+padding: 0 4px; width: 4em;
+color: #aaaaaa;
+}
+pre.numberSource { margin-left: 3em; border-left: 1px solid #aaaaaa; padding-left: 4px; }
 div.sourceCode
-  {   }
+{ }
 @media screen {
 pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
 }
-code span.al { color: #ff0000; font-weight: bold; } /* Alert */
-code span.an { color: #60a0b0; font-weight: bold; font-style: italic; } /* Annotation */
-code span.at { color: #7d9029; } /* Attribute */
-code span.bn { color: #40a070; } /* BaseN */
-code span.bu { } /* BuiltIn */
-code span.cf { color: #007020; font-weight: bold; } /* ControlFlow */
-code span.ch { color: #4070a0; } /* Char */
-code span.cn { color: #880000; } /* Constant */
-code span.co { color: #60a0b0; font-style: italic; } /* Comment */
-code span.cv { color: #60a0b0; font-weight: bold; font-style: italic; } /* CommentVar */
-code span.do { color: #ba2121; font-style: italic; } /* Documentation */
-code span.dt { color: #902000; } /* DataType */
-code span.dv { color: #40a070; } /* DecVal */
-code span.er { color: #ff0000; font-weight: bold; } /* Error */
-code span.ex { } /* Extension */
-code span.fl { color: #40a070; } /* Float */
-code span.fu { color: #06287e; } /* Function */
-code span.im { } /* Import */
-code span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Information */
-code span.kw { color: #007020; font-weight: bold; } /* Keyword */
-code span.op { color: #666666; } /* Operator */
-code span.ot { color: #007020; } /* Other */
-code span.pp { color: #bc7a00; } /* Preprocessor */
-code span.sc { color: #4070a0; } /* SpecialChar */
-code span.ss { color: #bb6688; } /* SpecialString */
-code span.st { color: #4070a0; } /* String */
-code span.va { color: #19177c; } /* Variable */
-code span.vs { color: #4070a0; } /* VerbatimString */
-code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warning */
-
+code span.al { color: #ff0000; font-weight: bold; } 
+code span.an { color: #60a0b0; font-weight: bold; font-style: italic; } 
+code span.at { color: #7d9029; } 
+code span.bn { color: #40a070; } 
+code span.bu { color: #008000; } 
+code span.cf { color: #007020; font-weight: bold; } 
+code span.ch { color: #4070a0; } 
+code span.cn { color: #880000; } 
+code span.co { color: #60a0b0; font-style: italic; } 
+code span.cv { color: #60a0b0; font-weight: bold; font-style: italic; } 
+code span.do { color: #ba2121; font-style: italic; } 
+code span.dt { color: #902000; } 
+code span.dv { color: #40a070; } 
+code span.er { color: #ff0000; font-weight: bold; } 
+code span.ex { } 
+code span.fl { color: #40a070; } 
+code span.fu { color: #06287e; } 
+code span.im { color: #008000; font-weight: bold; } 
+code span.in { color: #60a0b0; font-weight: bold; font-style: italic; } 
+code span.kw { color: #007020; font-weight: bold; } 
+code span.op { color: #666666; } 
+code span.ot { color: #007020; } 
+code span.pp { color: #bc7a00; } 
+code span.sc { color: #4070a0; } 
+code span.ss { color: #bb6688; } 
+code span.st { color: #4070a0; } 
+code span.va { color: #19177c; } 
+code span.vs { color: #4070a0; } 
+code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } 
 </style>
 <script>
 // apply pandoc div.sourceCode style to pre.sourceCode instead
@@ -107,13 +119,20 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
   for (var i = 0; i < sheets.length; i++) {
     if (sheets[i].ownerNode.dataset["origin"] !== "pandoc") continue;
     try { var rules = sheets[i].cssRules; } catch (e) { continue; }
-    for (var j = 0; j < rules.length; j++) {
+    var j = 0;
+    while (j < rules.length) {
       var rule = rules[j];
       // check if there is a div.sourceCode rule
-      if (rule.type !== rule.STYLE_RULE || rule.selectorText !== "div.sourceCode") continue;
+      if (rule.type !== rule.STYLE_RULE || rule.selectorText !== "div.sourceCode") {
+        j++;
+        continue;
+      }
       var style = rule.style.cssText;
       // check if color or background-color is set
-      if (rule.style.color === '' && rule.style.backgroundColor === '') continue;
+      if (rule.style.color === '' && rule.style.backgroundColor === '') {
+        j++;
+        continue;
+      }
       // replace div.sourceCode by a pre.sourceCode rule
       sheets[i].deleteRule(j);
       sheets[i].insertRule('pre.sourceCode{' + style + '}', j);
@@ -125,7 +144,187 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 
 
 
-<link rel="stylesheet" href="data:text/css,body%20%7B%0Abackground%2Dcolor%3A%20%23fff%3B%0Amargin%3A%201em%20auto%3B%0Amax%2Dwidth%3A%20700px%3B%0Aoverflow%3A%20visible%3B%0Apadding%2Dleft%3A%202em%3B%0Apadding%2Dright%3A%202em%3B%0Afont%2Dfamily%3A%20%22Open%20Sans%22%2C%20%22Helvetica%20Neue%22%2C%20Helvetica%2C%20Arial%2C%20sans%2Dserif%3B%0Afont%2Dsize%3A%2014px%3B%0Aline%2Dheight%3A%201%2E35%3B%0A%7D%0A%23TOC%20%7B%0Aclear%3A%20both%3B%0Amargin%3A%200%200%2010px%2010px%3B%0Apadding%3A%204px%3B%0Awidth%3A%20400px%3B%0Aborder%3A%201px%20solid%20%23CCCCCC%3B%0Aborder%2Dradius%3A%205px%3B%0Abackground%2Dcolor%3A%20%23f6f6f6%3B%0Afont%2Dsize%3A%2013px%3B%0Aline%2Dheight%3A%201%2E3%3B%0A%7D%0A%23TOC%20%2Etoctitle%20%7B%0Afont%2Dweight%3A%20bold%3B%0Afont%2Dsize%3A%2015px%3B%0Amargin%2Dleft%3A%205px%3B%0A%7D%0A%23TOC%20ul%20%7B%0Apadding%2Dleft%3A%2040px%3B%0Amargin%2Dleft%3A%20%2D1%2E5em%3B%0Amargin%2Dtop%3A%205px%3B%0Amargin%2Dbottom%3A%205px%3B%0A%7D%0A%23TOC%20ul%20ul%20%7B%0Amargin%2Dleft%3A%20%2D2em%3B%0A%7D%0A%23TOC%20li%20%7B%0Aline%2Dheight%3A%2016px%3B%0A%7D%0Atable%20%7B%0Amargin%3A%201em%20auto%3B%0Aborder%2Dwidth%3A%201px%3B%0Aborder%2Dcolor%3A%20%23DDDDDD%3B%0Aborder%2Dstyle%3A%20outset%3B%0Aborder%2Dcollapse%3A%20collapse%3B%0A%7D%0Atable%20th%20%7B%0Aborder%2Dwidth%3A%202px%3B%0Apadding%3A%205px%3B%0Aborder%2Dstyle%3A%20inset%3B%0A%7D%0Atable%20td%20%7B%0Aborder%2Dwidth%3A%201px%3B%0Aborder%2Dstyle%3A%20inset%3B%0Aline%2Dheight%3A%2018px%3B%0Apadding%3A%205px%205px%3B%0A%7D%0Atable%2C%20table%20th%2C%20table%20td%20%7B%0Aborder%2Dleft%2Dstyle%3A%20none%3B%0Aborder%2Dright%2Dstyle%3A%20none%3B%0A%7D%0Atable%20thead%2C%20table%20tr%2Eeven%20%7B%0Abackground%2Dcolor%3A%20%23f7f7f7%3B%0A%7D%0Ap%20%7B%0Amargin%3A%200%2E5em%200%3B%0A%7D%0Ablockquote%20%7B%0Abackground%2Dcolor%3A%20%23f6f6f6%3B%0Apadding%3A%200%2E25em%200%2E75em%3B%0A%7D%0Ahr%20%7B%0Aborder%2Dstyle%3A%20solid%3B%0Aborder%3A%20none%3B%0Aborder%2Dtop%3A%201px%20solid%20%23777%3B%0Amargin%3A%2028px%200%3B%0A%7D%0Adl%20%7B%0Amargin%2Dleft%3A%200%3B%0A%7D%0Adl%20dd%20%7B%0Amargin%2Dbottom%3A%2013px%3B%0Amargin%2Dleft%3A%2013px%3B%0A%7D%0Adl%20dt%20%7B%0Afont%2Dweight%3A%20bold%3B%0A%7D%0Aul%20%7B%0Amargin%2Dtop%3A%200%3B%0A%7D%0Aul%20li%20%7B%0Alist%2Dstyle%3A%20circle%20outside%3B%0A%7D%0Aul%20ul%20%7B%0Amargin%2Dbottom%3A%200%3B%0A%7D%0Apre%2C%20code%20%7B%0Abackground%2Dcolor%3A%20%23f7f7f7%3B%0Aborder%2Dradius%3A%203px%3B%0Acolor%3A%20%23333%3B%0Awhite%2Dspace%3A%20pre%2Dwrap%3B%20%0A%7D%0Apre%20%7B%0Aborder%2Dradius%3A%203px%3B%0Amargin%3A%205px%200px%2010px%200px%3B%0Apadding%3A%2010px%3B%0A%7D%0Apre%3Anot%28%5Bclass%5D%29%20%7B%0Abackground%2Dcolor%3A%20%23f7f7f7%3B%0A%7D%0Acode%20%7B%0Afont%2Dfamily%3A%20Consolas%2C%20Monaco%2C%20%27Courier%20New%27%2C%20monospace%3B%0Afont%2Dsize%3A%2085%25%3B%0A%7D%0Ap%20%3E%20code%2C%20li%20%3E%20code%20%7B%0Apadding%3A%202px%200px%3B%0A%7D%0Adiv%2Efigure%20%7B%0Atext%2Dalign%3A%20center%3B%0A%7D%0Aimg%20%7B%0Abackground%2Dcolor%3A%20%23FFFFFF%3B%0Apadding%3A%202px%3B%0Aborder%3A%201px%20solid%20%23DDDDDD%3B%0Aborder%2Dradius%3A%203px%3B%0Aborder%3A%201px%20solid%20%23CCCCCC%3B%0Amargin%3A%200%205px%3B%0A%7D%0Ah1%20%7B%0Amargin%2Dtop%3A%200%3B%0Afont%2Dsize%3A%2035px%3B%0Aline%2Dheight%3A%2040px%3B%0A%7D%0Ah2%20%7B%0Aborder%2Dbottom%3A%204px%20solid%20%23f7f7f7%3B%0Apadding%2Dtop%3A%2010px%3B%0Apadding%2Dbottom%3A%202px%3B%0Afont%2Dsize%3A%20145%25%3B%0A%7D%0Ah3%20%7B%0Aborder%2Dbottom%3A%202px%20solid%20%23f7f7f7%3B%0Apadding%2Dtop%3A%2010px%3B%0Afont%2Dsize%3A%20120%25%3B%0A%7D%0Ah4%20%7B%0Aborder%2Dbottom%3A%201px%20solid%20%23f7f7f7%3B%0Amargin%2Dleft%3A%208px%3B%0Afont%2Dsize%3A%20105%25%3B%0A%7D%0Ah5%2C%20h6%20%7B%0Aborder%2Dbottom%3A%201px%20solid%20%23ccc%3B%0Afont%2Dsize%3A%20105%25%3B%0A%7D%0Aa%20%7B%0Acolor%3A%20%230033dd%3B%0Atext%2Ddecoration%3A%20none%3B%0A%7D%0Aa%3Ahover%20%7B%0Acolor%3A%20%236666ff%3B%20%7D%0Aa%3Avisited%20%7B%0Acolor%3A%20%23800080%3B%20%7D%0Aa%3Avisited%3Ahover%20%7B%0Acolor%3A%20%23BB00BB%3B%20%7D%0Aa%5Bhref%5E%3D%22http%3A%22%5D%20%7B%0Atext%2Ddecoration%3A%20underline%3B%20%7D%0Aa%5Bhref%5E%3D%22https%3A%22%5D%20%7B%0Atext%2Ddecoration%3A%20underline%3B%20%7D%0A%0Acode%20%3E%20span%2Ekw%20%7B%20color%3A%20%23555%3B%20font%2Dweight%3A%20bold%3B%20%7D%20%0Acode%20%3E%20span%2Edt%20%7B%20color%3A%20%23902000%3B%20%7D%20%0Acode%20%3E%20span%2Edv%20%7B%20color%3A%20%2340a070%3B%20%7D%20%0Acode%20%3E%20span%2Ebn%20%7B%20color%3A%20%23d14%3B%20%7D%20%0Acode%20%3E%20span%2Efl%20%7B%20color%3A%20%23d14%3B%20%7D%20%0Acode%20%3E%20span%2Ech%20%7B%20color%3A%20%23d14%3B%20%7D%20%0Acode%20%3E%20span%2Est%20%7B%20color%3A%20%23d14%3B%20%7D%20%0Acode%20%3E%20span%2Eco%20%7B%20color%3A%20%23888888%3B%20font%2Dstyle%3A%20italic%3B%20%7D%20%0Acode%20%3E%20span%2Eot%20%7B%20color%3A%20%23007020%3B%20%7D%20%0Acode%20%3E%20span%2Eal%20%7B%20color%3A%20%23ff0000%3B%20font%2Dweight%3A%20bold%3B%20%7D%20%0Acode%20%3E%20span%2Efu%20%7B%20color%3A%20%23900%3B%20font%2Dweight%3A%20bold%3B%20%7D%20%0Acode%20%3E%20span%2Eer%20%7B%20color%3A%20%23a61717%3B%20background%2Dcolor%3A%20%23e3d2d2%3B%20%7D%20%0A" type="text/css" />
+<style type="text/css">body {
+background-color: #fff;
+margin: 1em auto;
+max-width: 700px;
+overflow: visible;
+padding-left: 2em;
+padding-right: 2em;
+font-family: "Open Sans", "Helvetica Neue", Helvetica, Arial, sans-serif;
+font-size: 14px;
+line-height: 1.35;
+}
+#TOC {
+clear: both;
+margin: 0 0 10px 10px;
+padding: 4px;
+width: 400px;
+border: 1px solid #CCCCCC;
+border-radius: 5px;
+background-color: #f6f6f6;
+font-size: 13px;
+line-height: 1.3;
+}
+#TOC .toctitle {
+font-weight: bold;
+font-size: 15px;
+margin-left: 5px;
+}
+#TOC ul {
+padding-left: 40px;
+margin-left: -1.5em;
+margin-top: 5px;
+margin-bottom: 5px;
+}
+#TOC ul ul {
+margin-left: -2em;
+}
+#TOC li {
+line-height: 16px;
+}
+table {
+margin: 1em auto;
+border-width: 1px;
+border-color: #DDDDDD;
+border-style: outset;
+border-collapse: collapse;
+}
+table th {
+border-width: 2px;
+padding: 5px;
+border-style: inset;
+}
+table td {
+border-width: 1px;
+border-style: inset;
+line-height: 18px;
+padding: 5px 5px;
+}
+table, table th, table td {
+border-left-style: none;
+border-right-style: none;
+}
+table thead, table tr.even {
+background-color: #f7f7f7;
+}
+p {
+margin: 0.5em 0;
+}
+blockquote {
+background-color: #f6f6f6;
+padding: 0.25em 0.75em;
+}
+hr {
+border-style: solid;
+border: none;
+border-top: 1px solid #777;
+margin: 28px 0;
+}
+dl {
+margin-left: 0;
+}
+dl dd {
+margin-bottom: 13px;
+margin-left: 13px;
+}
+dl dt {
+font-weight: bold;
+}
+ul {
+margin-top: 0;
+}
+ul li {
+list-style: circle outside;
+}
+ul ul {
+margin-bottom: 0;
+}
+pre, code {
+background-color: #f7f7f7;
+border-radius: 3px;
+color: #333;
+white-space: pre-wrap; 
+}
+pre {
+border-radius: 3px;
+margin: 5px 0px 10px 0px;
+padding: 10px;
+}
+pre:not([class]) {
+background-color: #f7f7f7;
+}
+code {
+font-family: Consolas, Monaco, 'Courier New', monospace;
+font-size: 85%;
+}
+p > code, li > code {
+padding: 2px 0px;
+}
+div.figure {
+text-align: center;
+}
+img {
+background-color: #FFFFFF;
+padding: 2px;
+border: 1px solid #DDDDDD;
+border-radius: 3px;
+border: 1px solid #CCCCCC;
+margin: 0 5px;
+}
+h1 {
+margin-top: 0;
+font-size: 35px;
+line-height: 40px;
+}
+h2 {
+border-bottom: 4px solid #f7f7f7;
+padding-top: 10px;
+padding-bottom: 2px;
+font-size: 145%;
+}
+h3 {
+border-bottom: 2px solid #f7f7f7;
+padding-top: 10px;
+font-size: 120%;
+}
+h4 {
+border-bottom: 1px solid #f7f7f7;
+margin-left: 8px;
+font-size: 105%;
+}
+h5, h6 {
+border-bottom: 1px solid #ccc;
+font-size: 105%;
+}
+a {
+color: #0033dd;
+text-decoration: none;
+}
+a:hover {
+color: #6666ff; }
+a:visited {
+color: #800080; }
+a:visited:hover {
+color: #BB00BB; }
+a[href^="http:"] {
+text-decoration: underline; }
+a[href^="https:"] {
+text-decoration: underline; }
+
+code > span.kw { color: #555; font-weight: bold; } 
+code > span.dt { color: #902000; } 
+code > span.dv { color: #40a070; } 
+code > span.bn { color: #d14; } 
+code > span.fl { color: #d14; } 
+code > span.ch { color: #d14; } 
+code > span.st { color: #d14; } 
+code > span.co { color: #888888; font-style: italic; } 
+code > span.ot { color: #007020; } 
+code > span.al { color: #ff0000; font-weight: bold; } 
+code > span.fu { color: #900; font-weight: bold; } 
+code > span.er { color: #a61717; background-color: #e3d2d2; } 
+</style>
 
 
 
@@ -142,28 +341,52 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 
 <div id="TOC">
 <ul>
-<li><a href="#prepare-the-workflow-environment"><span class="toc-section-number">1</span> Prepare the workflow environment</a></li>
-<li><a href="#use-rtry-for-geocoding"><span class="toc-section-number">2</span> Use ‘rtry’ for geocoding</a></li>
-<li><a href="#use-rtry-for-reverse-geocoding"><span class="toc-section-number">3</span> Use ‘rtry’ for reverse geocoding</a></li>
+<li><a href="#prepare-the-workflow-environment" id="toc-prepare-the-workflow-environment"><span class="toc-section-number">1</span> Prepare the workflow
+environment</a></li>
+<li><a href="#use-rtry-for-geocoding" id="toc-use-rtry-for-geocoding"><span class="toc-section-number">2</span> Use ‘rtry’ for geocoding</a></li>
+<li><a href="#use-rtry-for-reverse-geocoding" id="toc-use-rtry-for-reverse-geocoding"><span class="toc-section-number">3</span> Use ‘rtry’ for reverse
+geocoding</a></li>
 </ul>
 </div>
 
 <hr />
-<p>This vignette is intended to demonstrate how to use the functions <code>rtry_geocoding</code> and <code>rtry_revgeocoding</code> within the ‘rtry’ package to perform geocoding and reverse geocoding for a list of locations or coordinates.</p>
-<p>Geocoding is the process of converting an address into geographic coordinates (latitude and longitude), while reverse geocoding is the process of converting geographic coordinates (latitude and longitude) into an address.</p>
-<p>The functions <code>rtry_geocoding</code> and <code>rtry_revgeocoding</code> are based on Nominatim, a search engine for OpenStreetMap (OSM) data. The data provided are free to use for any purpose, including commercial use, note that they are governed by the <a href="https://wiki.osmfoundation.org/wiki/Licence">Open Database License (ODbL)</a>. As part of the <a href="https://operations.osmfoundation.org/policies/nominatim/">Nominatim Usage Policy</a>, an absolute maximum of 1 request per second (no heavy usage) and a valid email address to identify the request are required when using this OSM service. For details, please refer to: <a href="https://wiki.openstreetmap.org/wiki/Nominatim" class="uri">https://wiki.openstreetmap.org/wiki/Nominatim</a>.</p>
+<p>This vignette is intended to demonstrate how to use the functions
+<code>rtry_geocoding</code> and <code>rtry_revgeocoding</code> within
+the ‘rtry’ package to perform geocoding and reverse geocoding for a list
+of locations or coordinates.</p>
+<p>Geocoding is the process of converting an address into geographic
+coordinates (latitude and longitude), while reverse geocoding is the
+process of converting geographic coordinates (latitude and longitude)
+into an address.</p>
+<p>The functions <code>rtry_geocoding</code> and
+<code>rtry_revgeocoding</code> are based on Nominatim, a search engine
+for OpenStreetMap (OSM) data. The data provided are free to use for any
+purpose, including commercial use, note that they are governed by the <a href="https://wiki.osmfoundation.org/wiki/Licence">Open Database License
+(ODbL)</a>. As part of the <a href="https://operations.osmfoundation.org/policies/nominatim/">Nominatim
+Usage Policy</a>, an absolute maximum of 1 request per second (no heavy
+usage) and a valid email address to identify the request are required
+when using this OSM service. For details, please refer to: <a href="https://wiki.openstreetmap.org/wiki/Nominatim" class="uri">https://wiki.openstreetmap.org/wiki/Nominatim</a>.</p>
 <p>Note that the georeference system used is WGS84 projection.</p>
 <p><br></p>
 <div id="prepare-the-workflow-environment" class="section level1" number="1">
-<h1><span class="header-section-number">1</span> Prepare the workflow environment</h1>
-<p>Make sure you have the ‘rtry’ package installed. If not, you may refer to the vignette <a href="rtry-introduction.html">“Introduction to rtry” (rtry-introduction)</a>.</p>
+<h1><span class="header-section-number">1</span> Prepare the workflow
+environment</h1>
+<p>Make sure you have the ‘rtry’ package installed. If not, you may
+refer to the vignette <a href="rtry-introduction.html">“Introduction to
+rtry” (rtry-introduction)</a>.</p>
 <p>To start, set the work directory to the desired location:</p>
 <div class="sourceCode" id="cb1"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Set the working directory</span></span>
 <span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a><span class="fu">setwd</span>(<span class="st">&quot;&lt;path_to_dir&gt;&quot;</span>)</span>
 <span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a><span class="co"># Check the working directory</span></span>
 <span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a><span class="fu">getwd</span>()</span></code></pre></div>
-<p>Note: The character “<code>\</code>” is used as escape character in R to give the following character special meaning (e.g. “<code>\n</code>” for newline, “<code>\t</code>” for tab, “<code>\r</code>” for carriage return and so on). Therefore, for Windows users, it is important to use the “<code>\</code>” in the file path of the command instead of “<code>/</code>” in order for R to correctly understand the input path.</p>
+<p>Note: The character “<code>\</code>” is used as escape character in R
+to give the following character special meaning (e.g. “<code>\n</code>”
+for newline, “<code>\t</code>” for tab, “<code>\r</code>” for carriage
+return and so on). Therefore, for Windows users, it is important to use
+the “<code>\</code>” in the file path of the command instead of
+“<code>/</code>” in order for R to correctly understand the input
+path.</p>
 <p>Load the required packages using the commands:</p>
 <div class="sourceCode" id="cb2"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Load the rtry package</span></span>
 <span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(rtry)</span>
@@ -176,8 +399,12 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <p><br></p>
 </div>
 <div id="use-rtry-for-geocoding" class="section level1" number="2">
-<h1><span class="header-section-number">2</span> Use ‘rtry’ for geocoding</h1>
-<p><code>rtry_geocoding()</code> takes two parameters <code>address</code> and <code>email</code>, and returns a data frame that contains latitude (<code>lat</code>) and longitude (<code>lon</code>) in WGS84 projection.</p>
+<h1><span class="header-section-number">2</span> Use ‘rtry’ for
+geocoding</h1>
+<p><code>rtry_geocoding()</code> takes two parameters
+<code>address</code> and <code>email</code>, and returns a data frame
+that contains latitude (<code>lat</code>) and longitude
+(<code>lon</code>) in WGS84 projection.</p>
 <div class="sourceCode" id="cb3"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="fu">rtry_geocoding</span>(<span class="at">address =</span> <span class="cn">NULL</span>, <span class="at">email =</span> <span class="cn">NULL</span>)</span></code></pre></div>
 <table>
 <thead>
@@ -197,12 +424,17 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 </tr>
 </tbody>
 </table>
-<p>In the context of this example workflow, we will use the location data provided within the ‘rtry’ package. In this specific case the input argument for the file <code>data_locations.csv</code> can be obtained via <code>system.file()</code> that finds the full file path to the ‘rtry’ package:</p>
+<p>In the context of this example workflow, we will use the location
+data provided within the ‘rtry’ package. In this specific case the input
+argument for the file <code>data_locations.csv</code> can be obtained
+via <code>system.file()</code> that finds the full file path to the
+‘rtry’ package:</p>
 <div class="sourceCode" id="cb4"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Obtain and print the path to the sample dataset within the rtry package</span></span>
 <span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a>path_to_data <span class="ot">&lt;-</span> <span class="fu">system.file</span>(<span class="st">&quot;testdata&quot;</span>, <span class="st">&quot;data_locations.csv&quot;</span>, <span class="at">package =</span> <span class="st">&quot;rtry&quot;</span>)</span>
 <span id="cb4-3"><a href="#cb4-3" aria-hidden="true" tabindex="-1"></a>path_to_data</span></code></pre></div>
 <div class="sourceCode" id="cb5"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a><span class="do">## [1] &quot;C:/Program Files/R/R-4.0.5/library/rtry/testdata/data_locations.csv&quot;</span></span></code></pre></div>
-<p>To load the <code>.csv</code> file with location information, use <code>rtry_import()</code>:</p>
+<p>To load the <code>.csv</code> file with location information, use
+<code>rtry_import()</code>:</p>
 <div class="sourceCode" id="cb6"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Load the locations from a .csv file</span></span>
 <span id="cb6-2"><a href="#cb6-2" aria-hidden="true" tabindex="-1"></a>input_locations <span class="ot">&lt;-</span> <span class="fu">rtry_import</span>(path_to_data, <span class="at">separator =</span> <span class="st">&quot;,&quot;</span>, <span class="at">encoding =</span> <span class="st">&quot;UTF-8&quot;</span>, <span class="at">quote =</span> <span class="st">&quot;</span><span class="sc">\&quot;</span><span class="st">&quot;</span>)</span>
 <span id="cb6-3"><a href="#cb6-3" aria-hidden="true" tabindex="-1"></a></span>
@@ -215,7 +447,9 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <img src="data:image/png;base64,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" style="width:40.0%" alt />
 <p class="caption">workflow_geocoding_input</p>
 </div>
-<p>Then, the location data should be converted into the required format for <code>address</code>, i.e. <code>&lt;location&gt;, &lt;country&gt;</code>:</p>
+<p>Then, the location data should be converted into the required format
+for <code>address</code>,
+i.e. <code>&lt;location&gt;, &lt;country&gt;</code>:</p>
 <div class="sourceCode" id="cb8"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Extract and combine the location and country names</span></span>
 <span id="cb8-2"><a href="#cb8-2" aria-hidden="true" tabindex="-1"></a>input_addresses <span class="ot">&lt;-</span> <span class="fu">paste</span>(input_locations<span class="sc">$</span>Location, input_locations<span class="sc">$</span>Country, <span class="at">sep =</span> <span class="st">&quot;, &quot;</span>)</span>
 <span id="cb8-3"><a href="#cb8-3" aria-hidden="true" tabindex="-1"></a></span>
@@ -223,9 +457,17 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <span id="cb8-5"><a href="#cb8-5" aria-hidden="true" tabindex="-1"></a><span class="fu">head</span>(input_addresses)</span></code></pre></div>
 <div class="sourceCode" id="cb9"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a><span class="do">## [1] &quot;Hajdúdorog, Hungary&quot; &quot;Diósd, Hungary&quot;      &quot;Fót, Hungary&quot;        &quot;Bőcs, Hungary&quot;</span></span>
 <span id="cb9-2"><a href="#cb9-2" aria-hidden="true" tabindex="-1"></a><span class="do">## [5] &quot;Regéc, Hungary&quot;      &quot;Sáska, Hungary&quot;</span></span></code></pre></div>
-<p>Note that file encoding <code>UTF-8</code> is used, and it is normal for the RStudio console to display character in Unicode character (<code>&lt;U+0000&gt;</code> semantic) depending on the system language setting. For example, “Bőcs” might be displayed as “B&lt;U+0151&gt;cs”.</p>
-<p>In order to apply the function <code>rtry_geocoding()</code> to the list <code>input_addresses</code>, use <code>lapply()</code>, and please remember to change the email address into your own email address.</p>
-<p>Since OSM is an absolute maximum of 1 request per second, in the following example, a 2 second delay has been set between each search.</p>
+<p>Note that file encoding <code>UTF-8</code> is used, and it is normal
+for the RStudio console to display character in Unicode character
+(<code>&lt;U+0000&gt;</code> semantic) depending on the system language
+setting. For example, “Bőcs” might be displayed as
+“B&lt;U+0151&gt;cs”.</p>
+<p>In order to apply the function <code>rtry_geocoding()</code> to the
+list <code>input_addresses</code>, use <code>lapply()</code>, and please
+remember to change the email address into your own email address.</p>
+<p>Since OSM is an absolute maximum of 1 request per second, in the
+following example, a 2 second delay has been set between each
+search.</p>
 <div class="sourceCode" id="cb10"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Prepare counter for printed progress messages</span></span>
 <span id="cb10-2"><a href="#cb10-2" aria-hidden="true" tabindex="-1"></a>counter <span class="ot">&lt;-</span> <span class="dv">1</span></span>
 <span id="cb10-3"><a href="#cb10-3" aria-hidden="true" tabindex="-1"></a>output_coordinates <span class="ot">&lt;-</span> <span class="cn">NULL</span> <span class="co"># somethings received error messages &#39;no object found&#39;</span></span>
@@ -254,13 +496,18 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <span id="cb11-3"><a href="#cb11-3" aria-hidden="true" tabindex="-1"></a><span class="do">## Geocoding 3/20 completed.</span></span>
 <span id="cb11-4"><a href="#cb11-4" aria-hidden="true" tabindex="-1"></a><span class="do">## ...</span></span>
 <span id="cb11-5"><a href="#cb11-5" aria-hidden="true" tabindex="-1"></a><span class="do">## Geocoding 20/20 completed.</span></span></code></pre></div>
-<p>The progress of the geocoding can be seen in the console. Once the geocoding is completed, view the <code>output_coordinates</code> using the <code>View</code> function.</p>
-<p>The <code>output_coordinates</code> would look like the following. Note that the location which is unknown to OSM, the resulting latitude and longitude will remain or marked as <code>NA</code>.</p>
+<p>The progress of the geocoding can be seen in the console. Once the
+geocoding is completed, view the <code>output_coordinates</code> using
+the <code>View</code> function.</p>
+<p>The <code>output_coordinates</code> would look like the following.
+Note that the location which is unknown to OSM, the resulting latitude
+and longitude will remain or marked as <code>NA</code>.</p>
 <div class="figure">
 <img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAVEAAADSCAYAAADzJfOAAAAACXBIWXMAABJ0AAASdAHeZh94AAAgAElEQVR4nO2dzY4cR3LH63H2zoewYWjQgO9+ABL23RB8kUigME+gw16E4aEAC5iLL4YP8lKXBrEUsPB+arU0SXmptmTtQitSS/IUPtRXRmREZlZX1XRPxT+AANkfVV2RFfnLiMyajOqvb95Rr7/5/R/o9dt3UCgUCi3USkIUCoVCoeUaQfTN23cu1JOt0PXVmz95s1faHgogCoUuoN78yZu90nZA1LkTQJdXb/7kzV5pOyDq3Amgy6s3f/Jmr7QdEHXuBNBp+r/ffkff/fn75He25E/e7D3GdkB0w04AXVYP3/wf/fJ3X9Jvv3yW7Fxb8Sdv9h5r++Yhuv/qDf36m7fJ72zFVuh6+s13f6b/+s0X9PNf/Ip+/otf0RdPn9GfjM61BX/yZu8c2zcN0f1Xb+gf/u0V/fN/vqbffmuDdAu2QtfV//7qj/TF02dM/3j4Rv3uFvzJm71zbN8sRH/37Vv6++sf6Cc//Z5+8tPv6V8evaZnf9JBettthZ6XevMnb/ZK2zcJ0f/+7i393b/+ZQBor//4H6/o5fcxSBex9flDuqgqqu5/pn7+s/sVVdUFXT0/fftAp+sPr3+kH169Zvrqx7+q3035023xA2/2zrF9kxCV8Az17r+/muQExQqIblp/+bsvhzmyXr989pX63WWg8hndT/jT9uw9H51q+yYh+u0Ptv759TQnKFZAdNP641/f0K9//3ToVM/+5yX9+Gb69FCxHzx6QNUJIXrj9p6RTrV9kxCdqilbn11dtM7ca+DU0Wfs8y6SYNo5Uw/ci4vu34f07O27seN0ev+R9ju9Q4rzn6izedK/vHpFX/zhGT376iW9ev3jUf7EoSJ9pHtf+EFVPaCfbcJexbbBb1/Q1UX73YuLuA+cs+2AaMYJTIcQkecAuu613lnEsWHn6JyrdZreoR7Qz9SIZHS42zTCb0F/ePWjOT9W4k9mZCYzmRNHoqvYm7RR+PQQaHQBxhnbDohmnODN2zjivP9ofG8YKZmDdNAMHCDpTMPnSuT68x64HLrh9y+uXpy8DaFl/hRDVESjMiu5BRlGqb1Rn2H9JAgcWLucJgqfYjsgmnQCHkGGTrAORK3IsncwkeKEqdEJR2xoqT/pUFF9BhAFRG+TmrYK2PXR3/1H7yIn5x1CpttGOq/Nr4ZzRFe8A/Xf4ZHn7XA2T1oKFXVg7SGaWag8J52bzrf+DIjeas07QZc2X/CRlKXg/SJR7yDPwzS8nyy3IfrmrbGIpU7E88gUc6PnpZOhoi0yMv86f5AU2fv2XcHCEiB6K9WTrdD11Zs/ebNX2g6IOncC6PLqzZ+82SttB0SdOwF0efXmT97slbYDos6dALq8evMnb/ZK2wFR504AXV69+ZM3e6XtgKhzJ4Aur978yZu90nZA1LkTQJdXb/7kzV5pOyDq3Amgy6s3f/Jmr7Q9CVEoFAqFpjUJ0ddv37lQ2RAQyBzx6E8ebSaK7QZEIZAFxKM/ebSZCBAFRCGriEd/8mgzESAKiEJWEY/+5NFmIkAUEIWsIh79yaPNRIAoIApZRTz6k0ebiQBRQBSyinj0J482EwGigChkFfHoTx5tJvIA0ecP6b2qoveuXhwP0X1NVb2Xb1K9a+iQaeB9XdGu0b91aHbKZwdqdhVFP5c97hSyp7qqKWqZekdncXknlHKg7Kmuxvu9r5VihZqf7evxc8VZ9nX8Pj93d48ODe2i4ojG9aScstTm8LoV32mvx/Yf1Yb2QGp22vuUbqvQ/rCdrfcL7N4WRIMyBKeCaEo0GB6aXRKg1nGnEUDUklKIHpodg5aUfa19tqd6AIUYdDtg1LX02QM1u4L7cmhoN/j1nprggFRAQFRm874J+sy+DgDVQXBXU21ep20Du7bwvIeGdoOPirZin8nf4QPJFLu3A9HnD+m96oI+uH9xuyB6yJ8RED1/KYNo60ONCkoSQLPfV/0h8tkDNTsNGPIwG+g5v5uczqv2pWBv2SD9cDxHdM1Bu9i2ivOp/X+U7UK006dXNwHRMJXgKQO/UW3q1qcyzXCDpePI19ZxBb/dtGlJ/32WDgkH7qOiqqpo1zQqIKM2SEI0bVfbNoFtYRuzFKxhx4XXGaaEzN4P3xf2hdHb+lIUlXW+YXVmOyuRkahiV+SzoQ9ZkVU6MEgBlugIiKr9KgVRwwYFxmbbDt9tgdwwn+d9KoxEp9gNiFo3W5k30udKNFCMN2a8Ua1D5CGaO453iDD12Nf8GuU82aHZja/3NQNSC6oSiCrtYnbwuG3G3wjAIOfF9nU8zxVcp26v+O1MNLG0ZIGSjYj0AWqQYM5ONStpL5+HHU+ZiDRZ6q3LNIhag1rhtENow1EQ7Xx3nAcR1zP6di7rA0QXiUQpAm08isWj/KEoEk0dp0QOgUNxB9JSobGjxh0o04kT35kWiYbHda/VVNSKzCsTRhKwN8jQtD+JTq9e274uBpo6Z5cZNOL7baf72iKVJsUQFQO2uLJCiAY2HA1R/jvDd8VcKQs2FAFEl4Co4tQRRJUbXQTR5HHLQTTuyKeDqN7Bg0FFRqlmRNe3z/z566mS8id1Bb6SGUV6hVoHA/vSNIgeGtoZq/ylg0/x6nzyhEdA9Kg50fh3bP9L9wVAdAGI8pEqfmQlTOfl/GgYKbE5Hmv1dWI6LyGVTOfFYkVZOp9eWLLtSkSictU0TOfFZ6FNWoff1ztqmkRUt5JMSW3LBjAOhuhexYZn0nkOEDWVN8BqSd7mksWt3PpAL9yGY1bnWbuF35ORcmYqAxBdIhIVCz+1FokON8pYIGLPpYnHPFLHGalt9NuBE1lzumGExBaWzNSyYHU+YZcJURKLR2JhKbzO8FEeKy3ODwbLyyyIFqxapxYIuy9wnxXPg8bMtdquZB2glbzN2hy6BGQmKzNt4H2QN6e2eDTarV2HtXhZYvfmIFqqa/21xU3PxS0mQUc+NPWJH1kqmVqwDr3ZBaVePP71jkebiQDRlSE6o/OfWMb0qOz5wjUlN7GfODL7119riUegeLSZCBBdCaJj2nweD8UXiPzzv5OGzyLtO2ZRqEtFT9X+HoHi0WYiQHTlSBTiVTz6k0ebiQBRQBSyinj0J482EwGigChkFfHoTx5tJgJEAVHIKuLRnzzaTFQAUSgUCoWmNQnRU0eIiEQht1E8+pNHm4mQzgOikFXEoz95tJkIEAVEIauIR3/yaDMRIAqIQlYRj/7k0WYiQBQQhawiHv3Jo81EgCggCllFPPqTR5uJAFFAFLKKePQnjzYTAaKAKGQV8ehPHm0m2jJEg5rzVVVRdf+z4yGqbE4bbwhrVFw8YgeikpLIS+xEDllPyoESV0KYshGy3OWeb7wd+yTb0HosD5DcgDi1qfFxNht1m1iFV92P+Wbd2nf0InzDsRPa6li7NwPRp1cP6dPh//nd7bMQVcrPpkF3fF0fQPT2SylQ+o5q3bb0pt7dloFW0bqSgnZEtG9EwcVc6RFDimzuQBlWJBhtsUrihMfqpT56sdszbqtseZwj7d4MRNWoNBGNToNof1NSJW0PRxdGA0Rvv5RBtB1oGwuUapmQ8OMd1U34HbtgW+5c+m9O21R8UjqvlS8REJP+bRedG94w2zNuKzlAhbbOs3uTEF0+EpU3QTS6WQuG1ziSxef0Gkq6ZCEqrzl83TnsfkhXZE2bIMVpaj5aa7VxuvM1dUVV9T59KCKE43emv71SAhSzrG8nh2ZnR6E9dEL4JEoHt3WyGrMOUXAA95O6Saa8U21Wf6d9Q0Si+lREBFEFimbNKgXUldZfZtq9PYgOc6MPhvR+VYiKipbMOdTzyIqdJVMFspCWsiN9DqLBb4TOxOeqOqBqPVk5H5tjY+coK4G7JckCJVnqmSgdDRkRZgKirb+M90Ef2JRy1PK+zipUxy4s/v0g+NCnO2NoDq/N9kxH48Mc8U5Macywe1MQ7SPQ6uIhPc189ziIhrXQ7cqYQ9Qo4NWdJZo7XSSdL4hED+Fxu4YOGvAiICoLHpFzikHlhmu+n4Mk/emQSiuHN00fiCrIlkI0kT6rVVEjeEyrv54UzT9L5m/DhbGm8/dEe5ptJedUZcnkGXZvB6J9BFoA0KMgyupZF0I0eD2MdIrjnw6iirMMxylOl+i8fSqaTEk3LCl/UlfgxeDKyk6HImthsfQ8MSeamoO0KqKmBseJNiuNkC7vXTD49n3AbM+PPrLbKjX1MdPujUD0BX18UVFVXdDHz8uOmQRRmb6WpvPqOeUqY3k6n4Qog7xI002IygggTOe5HexxEc3hh3ml21ntdK5MfdwnfmROtpsxLaJEYfrqPL9/ZdVcuW/m5rbnQFQ+fjT+VsJuA2zmEw3Ropnsd/rTAVPt3ghEP6MPtBFozuo8O5e8qcLpxfezz+Ox6CJcWLIdvGR1nqU+dUkk2tuiLyyx5+bqOhmJxnO9vmQWRM32zENULlLu5XejZyxFZdXIv4PPM5Hh3DlRFlGytDuY08wtjFEpROX5tIHsOLs3AtHpep5/bbGn+sS5cMnUgnGkywWlXs7Tn9YVjzYTAaLnDdHE4sINXYA+FVF06HF/rbUVOUt/Wlk82kwEiJ43RE8g8tGp6YFwv4Lvcy60F4/+5NFmIkAUEIWsIh79yaPNRIAoIApZRTz6k0ebiQBRQBSyinj0J482EwGigChkFfHoTx5tJiqAKBQKhULTmoToqSNERKKQ2yge/cmjzURI5wFRyCri0Z882kwEiAKikFXEoz95tJkIEAVEIauIR3/yaDMRIAqIQlYRj/7k0WYiQBQQhawiHv3Jo81EgCggCllFPPqTR5uJAFFAFLKKePQnjzYTbRiiQ32lTlOVPrMQlZsyGxsQH7X1p1WO2fE2cluQcqDwHdbVUheGL7BNt/fKZ3ynZ1Yfi22xKEuOyLIyK2zKHF+f2EEs1Zmi6hFE0WbivO6Hcd5DpqKn3P1elw1D9GFX3bOsVEgWoomWVOsIlRZoA0Q3KaVAYfW2FLF2abcKuQ2VKuu4pE0zllLgg36qxpJaUkSXIput62OF8qygpIPerqaabfgtqiiYZVH4ee1SKv0AVVNt7ZKfsHszENWi0g8erQTRg+JYgKhrKYNoe5+b0nIWuffZqdM+y+Bsbf6dKm6nyKR0XqmxFNWUN69fVk1IFOhTas23v5M4hl0mIBpEosvXne8bWS0hXLqxcRai8uaGrztHCNIV7vNBTaSmCZxGlD5m9XbaGk9VtaOPPlLK7DrfbLlUSoDSd1Cro5qVUvd1dz8T9YYmQIhvxD2eSy2zvGK1zwiiJrBFn4iuK4w4ZSSarkGvTYs4hmhQrG6JuvPKnJGc12FONyUS1YrqFUM0uIbQ8UQd8bajaB0gPt/ozHy0Pr7ekj/JAiWAiN5R7TK9h26QYxCMe78J0VT1yqiKa5EPtTIHomo6XQpRtYZ8/LqS7wGi5frp/WqFdF6rxClKJy+SzhdEosrvx8ArqUgad9zRiXwXnpsqSX9SyhzHLmDX11IjROlrps/mKrDGAyfLZlZK59u3An9seOXa2A7hi2H2t2uoqbvPFTjvmgMgOlkfPciu0G8Nosla5opjWRAdyjAfUk4NkZLyJ3UFXqyY7+vEgFUyVxn5VekgaEfAuXnWuRANJZ315GxJ9IOhrTAnmtEX9PHVWGN+nUh0wXQ+s7DE5ovYiqkNUQnKMBXjkUz4GIfWgdrBorHm5yCqTH3cxxzwBpGDZ2bVXEmXS6Zi7FQ/X/l1MYiyaQQNbmmIhu3BpieI25danQ/P5ReiF3yUn/2cqL58yhdo2E0YP2sXD4ybXrI6z1KV8PGOBESJRzx8YWnPFiXqVCRKsSNC8jILouoArC2mJJ6pVFa/o+g3nNtXfTjx7OVMm9VoWl0oK4Mo93V+oWX26dG3Y4hO13X/2uJATX1iCJVGxuqhWFCaKh7/esejzUSA6M1A9AzmE3MPSieOzKZxkFg8AsWjzUSA6A1FoieQ1J/yFZ8i/dc0EFs2508F4tFmIkB0uxCFnFQ8+pNHm4kAUUAUsop49CePNhMBooAoZBXx6E8ebSYCRAFRyCri0Z882kxUAFEoFAqFpjUJ0VNHiIhEIbdRPPqTR5uJkM4DopBVxKM/ebSZCBAFRCGriEd/8mgzESAKiEJWEY/+5NFmIkAUEIWsIh79yaPNRIAoIApZRTz6k0ebiQBRQBSyinj0J482EwGigChkFfHoTx5tJnIB0YWqfRplHAbp9utsUmUdjhB1L88z2FoPkpZyoISVBfq36vzuW8Z32ObLWskQ7byJHb/kZs4ptyuymfUlsRFygd3sesIqEkq5lWija21LR1GbKeq6ouBjid3bg2hXX2m5ksna/prdpsv7evFt4wDR2ymlEI23G5QlfhVwReUzxu/s90Gdg1pWbjXOmykJXupqJTbvmwBUYUmOhE0Ufj/3nf5crEaZrAgRfC8JyL46hWuIBmWTF6w7b9YJPyy/czEgejulDKJtGZimtkv5avc/es+CYPh+6ryJ+kvJgnlCJqfzwTWV2FRqt94/9ZIiyW60r0VZHV02DdGnVxdUXTykj+8vCFGj1KqVQsW1X3hdphwLsxDV6neLa90PKVBcq3t4vwmOYymXqOvTdfqqep8+FJFAqp65NymKyuq+/lYqEi2oQGmUfik9L0/ZZX2j8o29J0M08NUSm6LqDGpxub1R1lmrmtsWYNSn6fp6Y4nqp51sF6LPH9J7XYXPT5eAqDHXkqr4qUIlUypWilpgLHToHEQrUfkwLE42hj9tZymJZiorDURd+lCyQMkBJDHIpoEzFl/TpwHSg7ddlDBfs34aROOKpdmBQSn1La/Vrgcm/bNrJ2OaLllGXMhGIdql8ffbssmLQFSk82NUadWeN6AiwJaTJSLRQ3jcrqGDdm0REJXoOnLswMFmFMLboiT9SbQVA4gCCq16ZWkkygbbzHm7T9avO68s1kyyqR8IGjmtpfXH8DMJUT29533OK0SHxSSpNkinQHR8nYJouvFL6xetA1Hl2phNxhyd4tiHrh59/y+klZQ/sekf8dRHCUyK50SD+1wKqdUhapyj3KbEMcm1Ai2d1yAallEO1c6ytglRoetFoul0Xn6WO68mWYiKFUb2myZEZSQSpvN8hGbpndbxDg3t6iYRAfiUKaltCDiZTo/+FHR6cyV7T8HifDy1pJ6Xiz2vnVgNL7Y5ESmaNqUyOn6udGnv+DzMVnOl3mskugZEzcqZRuqrfLZrDsZzcrZzlazOsxSnLolEe+fQF5bCedhdXScj0ZK5Mo9yLET717E/2YtB0WBYsMgZzS2qx/CoLHeP8zZrUV6JTeHgYTxjqrQjF3uRLh1pAqLFetq/tthTfeJcOD2KJ4/EgpIiHv96x6PNRIDoeUA08ZzeDV2A8gcEpYdqj5lAPALFo81EgOh5QPQEMuXP+YwzFP01h1fx5k9EPm0mAkTdQhSyrnj0J482EwGigChkFfHoTx5tJgJEAVHIKuLRnzzaTASIAqKQVcSjP3m0magAolAoFApNaxKip44QEYlCbqN49CePNhMhnQdEIauIR3/yaDMRIAqIQlYRj/7k0WYiQBQQhawiHv3Jo81EgCggCllFPPqTR5uJAFFAFLKKePQnjzYTAaKAKGQV8ehPHm0mAkQBUcgq4tGfPNpMtGWIdoXqwp2KPnh0JETlpswLbv02r0KmvmHslDK3kHWkHCjtRsXMBUJ/M8t+WDtwic22DyXHiMqvyibJejXQI2xWNyUPL6WhXXKD5NzOY3F78nIswblT1xJuAJ3p79uF6KMHVFUX9PHzBSLRRHmQWTK7fjwgeq5SCtG41pYsbaxV7dzTfqzzEZXVCOvJj6VdrGOEPyf2h81t3F1i874Jzs1+qwP5rqba2uQ7YUN4jbw97U3D7WuJK39OsRsQ1SRVDG6OHA4zI1pA9FylDKJtjfSmNgoDUknFgRAS0h8sgBxzzPQyGVkxy82U+K/2PaU9kxVAjWuR/TtTyXazEH16dcHTkK588lKRqJUuhA7Pa8Y03AnDVCJRlynN6hxE0xUOo+qGcqAY3m+C40QdH9kuTVcS+sP3lXo9fuBeFJV1fsT9SUaimTaT1VgjIBr15xN1s9RaRQXVFyZDVA1GCiGauO64PQvqRO15jTH+vfQAslmIhtoWqltuTlQCVE0dRG3tFqjda+E84U2bNlWQK++ah+h4jUHnlfNS+9oo5KWczyistlj0fkskC5SgPdRyxplBdBiglQGYRbXBOdRjiiBaBrZpELUG1fRv6XZTuj3Zb2qfxRVuAVGpfR36RDRaGonyhSARlQWOn7oR6oT9UK54SrmNJSLR8LjudQQ8BYjKoCLPJwcHRwxN+5MAF2sbMSeZHVTlgCcWRBptaic8pgSihXP3xRAVAYa4uPJI1LAh5Wtqffts6WVAdIDoe1cvZkOU3+TEpHV0IzlE1Y6RmXtRfmUViMbXJyJsw2FVm3cNHYZ//UjKn/hqMU81VYBl2s6eN7U7/3hMfk700OyKBsDi1fnkycqrx/Y2pNrTOiZ5LZgTbfXTq4f0tP///Sq7yDR5Yalr1H1tPIYiYBOl86pzT63hnl9YYpGMiFrMSFTOrQXpPI/EeXqkRQD7uq1p760u/ZTUNmy3Q7OL/aa9KQNcDvt90VxzeO9Tx6RX58uhlre5ZJHHHvin2G2n82GAYV0LVucDcJY9IzoZogx2MqXnj45YC0t2tU3lWThzUr9gdZ6ld/zxEROi8vrYwlJ4fTXVyUiUMqnbduVYiPav40VHOd9uz9GrkVjiGHlP+b0qn2LK26zN4UsQJrKnpA28DeS8cK6fJZ8hzYThm4XoVF39ry0mp+rhofWJV7WnztWGh/paUOrF41/veLSZCBC9MYge/4B+4XNuK8rxf1VlPGLjQDwCxaPNRIDoehAVacTtisZEqnNMBN2lQ97mQnvxCBSPNhMBojcWiUJ8iUd/8mgzESAKiEJWEY/+5NFmIkAUEIWsIh79yaPNRIAoIApZRTz6k0ebiQogCoVCodC0JiF66ggRkSjkNopHf/JoMxHSeUAUsop49CePNhMBooAoZBXx6E8ebSYCRAFRyCri0Z882kwEiAKikFXEoz95tJkIEAVEIauIR3/yaDMRIAqIQlYRj/7k0WYiQBQQhawiHv3Jo81Em4foC/r4YtyN6OjyIGLjZW1nopKt7paqM6SWg5hdwx6ypJQDRS+eFm6urN1Wvmn2Xn9fqZ0UbUAsdxtT6mYduzlx0mpREUIt8ZHYPYxVAMjYIM+vbjyu/pZV2C5t94Yg+hl9kClOVwpRCch9E1caLNnyDRD1I6VA6Tuy7PBJf2LVAvierfs9B9N4nmNKEe+pCf1+YpkM+9orquv0Zt3pvtJt1WhBVilcpwY+Zlv10OWVGyzZLETbuvPpukplEM073+FQtmcmIOpHyiDaFvBrZDmLqYXpigqulW3uPalSppBJ6Xyq4kGmDQ7NjurG/k5UHqRkP1zjekr67GYhKmsszSlUx4rM8U94fSWjlLJWgyis+c7rLeUdPQtR6Tjh6+7/++E3ZT2bIN1r6qgoXTyl0ZYOaZodVdXf0D/9bVw2+XZtSL2MlACl9wdZMrmtx2X7QxRZRcXl+Pm7V8b9Y0ckq7LmgLIURJPVRXtfNuEobChoz/Zrum2OITrOhbYF6rrU/mKsADoFov3NSM/TiIJaiVEtBZbcaN9/RysRW5VCNOhE4bXweaoOqOp1hjWX2s6pl6EtrxS5NSnyp6Dd+Tzd2Gaqryhlq6sgBa/F4K38uDrXl/Q9A9ShLAPRVD2vwJ8MiEob0u2ZbytAtHpAn7LXdjQ6aQ5LjHTRZLYAVXhDdjsNoKIcR+auLRGJxp8pwBOOzuEdVv8MnT54PaM4322XpD8pc3YMogU1z9lCSaNP5ZjlvEnzITvdT50nlEUgmlhfyKfpsQ2T2hPpPNc2nZcQ7V8fD9Eo4jQ6w3ADRTq/2wkIy/rZBdUx14GoEgEE18Kd8SBKKMeO20fcDjN5IkoDRV2J7gddef+PmSMdf8mM6qJjjDn1KfP4S0CUlfsOxViBZ+m5ZkNxe1rlxx1D9PWjB3E6n1ipTy4s1Tr0tNRArbsu0rb48QxRq34uRAWYo98zABuv5lbs2nfjCWlnRqL9tTQnr1J6Spn6uA+fuxzv3djuxtQI85897RkvrGkjMXDTMouV8yGqgSxht4ChPphY7VnWVr4h+rZfoe9GrMR8aDYS1VL24QaNI+LwOAT7PgekNvfFUrM6hK4+Kpc4fJh67+q6IBKV9oiFpTAS2NVUJyLRHsBeK30SzYEo8bbWon8WlYVtLxY65X02nqFUr6F9c9Kzm7MhaqboZRA1gWe2Z94u9xCdouf31xYyAj7BFRQschlHul1Q6uX8/Gl98WgzESB6vhA9+XOfccpXfmh+JXfrcnb+dAPi0WYiQPR8IXoCkY9OTWd4nyL5nQvtxaM/ebSZCBAFRCGriEd/8mgzESAKiEJWEY/+5NFmIkAUEIWsIh79yaPNRIAoIApZRTz6k0ebiQogCoVCodC0AqJQKBS6kLpN56FQKHQJBUShUCh0hgKiUCgUOkMBUSgUCp2hgCgUCoXOUEAUCoVCZyggCoVCoTMUEIVCodAZCohCoVDoDAVEoVAodIZOgOjX9Mm9O3TnTqt3r7/u3v+c6juX9HiFi3txfY/uXH6+vOEvr+nunXv0ycuVGvblNd3t2unOvWt6cfTxSrs+uRzuQfR5+Nka7Wbq51Qv3J4vru+NthzThnPv30K/+eL6XtBXoFvUYog+vrzDnOHxde9k60F0ee0GgnuXVN9Ldfqv6ZPk5wl9eU13Z7bH48s7VD8xPrsOOveTyxEw7HdbO61zHNduKw46mp1PxkFA+h7TJ5flA0YpHAFR6AQthGiqE90miJbYU/K5rSkALn6OoLNHnXUKXGa318qasgUQhZ5YiyPRNr3SYNlBNEglGQBY+tl3RJv7cZYAAAMoSURBVNEpw4jq7Tt6fNl+Fjpg+//PxykF5uThVMM9+uQ617FSUODTFsN5VDu0Yy/pkyAVNTtQmPIHbfb4UvltSwOAROBNgCD8jWhaJrqPSnt05/7ksp9SEAMps218n6XoEwBvDiqmbyltqLW3dU9TEDVsY/ctODb0YWlH+Lr9/+dUB9c3tld8bY+1z96Ox9s+Cl1apy0s9U7HHKy7cSFs+s+fXHLwBiknd6B7dHeA2tghJURlR2HgGTpl14mOhqjyecIOfpxoC2uuMJqT5d8ri0Qzxxgg4N8L7UzcR9keHUjG8wQQlb87gH5qxsKBkvRJce/ZtFM4FZCCY3ge83v6/eT+x+fyp0D0TtiGwQDH1gYSnyHqPY0etTr/4vpe0MFk5+AQlB1gcJywc3Uja/2kcxLFKaSDjK8VIGZTvGkQTdrBjos7mfq9J5eRs6c6W6QS6toxKghElMYgZd9HFaLRQNp9l0V3YWTWz0dPT5MlpKK2CActef7wWqPrFu1hfi/lV232wQcHPRDIR6Ja279LAz583bX9cnPh0BI98hEnGcEcAdH+ey+vqb7+eoBneEwZRJUI52QQjc+7OEQN28rmRKfMbc+AaKrt+3R40nxtIoo9GqJi8S0JW6ONh/OcCUSD8yKdvzktX1i6lJ0mD9FcGvz48h7Vl5dsnvRu4JBlEJWrt6dM57XUS/ne0em81mG1a7JX5+2obiGIFj0+lkvtP6fHwbUnH3U7Op3nbc6yKysSNWwrTee5He10xRoQ1foLdD0tj0RFmmbecPGaLSZIBxQLSrKzlEI0mlCftbAkrjvoDPmFpVbHRYbE98z2TEE0tDP+jfAa7Q4kU/r+XhXex2BhSYWoYtuYMWgLaVobGWm2qv15xdyuuoA1npcv3Nyhu5eX2Ug0to0PWrmFJX5tl1QvHIme9Nlax7rJv1jCKHxbVGY4UOjt0w1CdPm/noGupMEiIhR6W3UTEOWpNlYnoVDozekmIAqFQqGnUkAUCoVCZyggCoVCoTMUEIVCodAZCohCoVDoDGUQffbVH+k3v/8DFAqFQguVQRQKhUKh0xQQhUKh0Bn6/zAdPpjjfcv6AAAAAElFTkSuQmCC" style="width:40.0%" alt />
 <p class="caption">workflow_geocoding_output</p>
 </div>
-<p>Substitute the coordinates into the corresponding columns of the input data.</p>
+<p>Substitute the coordinates into the corresponding columns of the
+input data.</p>
 <div class="sourceCode" id="cb12"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb12-1"><a href="#cb12-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Add the output coordinates to the corresponding columns in the input data</span></span>
 <span id="cb12-2"><a href="#cb12-2" aria-hidden="true" tabindex="-1"></a>input_locations<span class="sc">$</span>Latitude <span class="ot">&lt;-</span> output_coordinates<span class="sc">$</span>lat</span>
 <span id="cb12-3"><a href="#cb12-3" aria-hidden="true" tabindex="-1"></a>input_locations<span class="sc">$</span>Longitude <span class="ot">&lt;-</span> output_coordinates<span class="sc">$</span>lon</span>
@@ -282,8 +529,11 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <p><br></p>
 </div>
 <div id="use-rtry-for-reverse-geocoding" class="section level1" number="3">
-<h1><span class="header-section-number">3</span> Use ‘rtry’ for reverse geocoding</h1>
-<p>The <code>rtry_revgeocoding()</code> takes two parameters <code>lat_lon</code> and <code>email</code>, and returns a data frame that contains the corresponding location.</p>
+<h1><span class="header-section-number">3</span> Use ‘rtry’ for reverse
+geocoding</h1>
+<p>The <code>rtry_revgeocoding()</code> takes two parameters
+<code>lat_lon</code> and <code>email</code>, and returns a data frame
+that contains the corresponding location.</p>
 <div class="sourceCode" id="cb14"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb14-1"><a href="#cb14-1" aria-hidden="true" tabindex="-1"></a><span class="fu">rtry_revgeocoding</span>(<span class="at">lat_lon =</span> <span class="cn">NULL</span>, <span class="at">email =</span> <span class="cn">NULL</span>)</span></code></pre></div>
 <table>
 <colgroup>
@@ -299,7 +549,8 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <tbody>
 <tr class="odd">
 <td><code>lat_lon</code></td>
-<td>A data frame containing latitude and longitude in WGS84 projection</td>
+<td>A data frame containing latitude and longitude in WGS84
+projection</td>
 </tr>
 <tr class="even">
 <td><code>email</code></td>
@@ -307,12 +558,17 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 </tr>
 </tbody>
 </table>
-<p>Here, we will use the coordinates data provided within the ‘rtry’ package. In this specific case the input argument for the file <code>data_coordinates.csv</code> can be obtained via <code>system.file()</code> that finds the full file path to the ‘rtry’ package:</p>
+<p>Here, we will use the coordinates data provided within the ‘rtry’
+package. In this specific case the input argument for the file
+<code>data_coordinates.csv</code> can be obtained via
+<code>system.file()</code> that finds the full file path to the ‘rtry’
+package:</p>
 <div class="sourceCode" id="cb15"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb15-1"><a href="#cb15-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Obtain and print the path to the sample dataset within the rtry package</span></span>
 <span id="cb15-2"><a href="#cb15-2" aria-hidden="true" tabindex="-1"></a>path_to_data <span class="ot">&lt;-</span> <span class="fu">system.file</span>(<span class="st">&quot;testdata&quot;</span>, <span class="st">&quot;data_coordinates.csv&quot;</span>, <span class="at">package =</span> <span class="st">&quot;rtry&quot;</span>)</span>
 <span id="cb15-3"><a href="#cb15-3" aria-hidden="true" tabindex="-1"></a>path_to_data</span></code></pre></div>
 <div class="sourceCode" id="cb16"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb16-1"><a href="#cb16-1" aria-hidden="true" tabindex="-1"></a><span class="do">## [1] &quot;C:/Program Files/R/R-4.0.5/library/rtry/testdata/data_coordinates.csv&quot;</span></span></code></pre></div>
-<p>To load the <code>.csv</code> file with coordinates information, use <code>rtry_import()</code>:</p>
+<p>To load the <code>.csv</code> file with coordinates information, use
+<code>rtry_import()</code>:</p>
 <div class="sourceCode" id="cb17"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb17-1"><a href="#cb17-1" aria-hidden="true" tabindex="-1"></a>input_coordinates <span class="ot">&lt;-</span> <span class="fu">rtry_import</span>(path_to_data, <span class="at">separator =</span> <span class="st">&quot;,&quot;</span>, <span class="at">encoding =</span> <span class="st">&quot;UTF-8&quot;</span>, <span class="at">quote =</span> <span class="st">&quot;</span><span class="sc">\&quot;</span><span class="st">&quot;</span>)</span></code></pre></div>
 <div class="sourceCode" id="cb18"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb18-1"><a href="#cb18-1" aria-hidden="true" tabindex="-1"></a><span class="do">## input: C:/Program Files/R/R-4.0.5/library/rtry/testdata/data_coordinates.csv</span></span>
 <span id="cb18-2"><a href="#cb18-2" aria-hidden="true" tabindex="-1"></a><span class="do">## dim:   20 2</span></span>
@@ -321,11 +577,16 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <img src="data:image/png;base64,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" style="width:30.0%" alt />
 <p class="caption">workflow_revgeocoding_coordinates</p>
 </div>
-<p>Then, the coordinates data should be converted into a <code>data.frame</code>:</p>
+<p>Then, the coordinates data should be converted into a
+<code>data.frame</code>:</p>
 <div class="sourceCode" id="cb19"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb19-1"><a href="#cb19-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Extract and converted the coordinates into a data frame</span></span>
 <span id="cb19-2"><a href="#cb19-2" aria-hidden="true" tabindex="-1"></a>input_lat_lon <span class="ot">&lt;-</span> <span class="fu">data.frame</span>(<span class="at">lat =</span> input_coordinates<span class="sc">$</span>Latitude, <span class="at">lon =</span> input_coordinates<span class="sc">$</span>Longitude)</span></code></pre></div>
-<p>In order to apply the function <code>rtry_revgeocoding</code> to the <code>input_lat_lon</code>, use <code>apply()</code>, and please remember to change the email address into your own email address.</p>
-<p>Since OSM is an absolute maximum of 1 request per second, in the following example, a 2 second delay has been set between each search.</p>
+<p>In order to apply the function <code>rtry_revgeocoding</code> to the
+<code>input_lat_lon</code>, use <code>apply()</code>, and please
+remember to change the email address into your own email address.</p>
+<p>Since OSM is an absolute maximum of 1 request per second, in the
+following example, a 2 second delay has been set between each
+search.</p>
 <div class="sourceCode" id="cb20"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb20-1"><a href="#cb20-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Prepare counter for printed progress messages</span></span>
 <span id="cb20-2"><a href="#cb20-2" aria-hidden="true" tabindex="-1"></a>counter <span class="ot">&lt;-</span> <span class="dv">1</span></span>
 <span id="cb20-3"><a href="#cb20-3" aria-hidden="true" tabindex="-1"></a>output_locations <span class="ot">&lt;-</span> <span class="cn">NULL</span> <span class="co"># somethings received error messages &#39;no object found&#39;</span></span>
@@ -354,13 +615,21 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <span id="cb21-3"><a href="#cb21-3" aria-hidden="true" tabindex="-1"></a><span class="do">## Reverse Geocoding 3/20 completed.</span></span>
 <span id="cb21-4"><a href="#cb21-4" aria-hidden="true" tabindex="-1"></a><span class="do">## ...</span></span>
 <span id="cb21-5"><a href="#cb21-5" aria-hidden="true" tabindex="-1"></a><span class="do">## Reverse Geocoding 20/20 completed.</span></span></code></pre></div>
-<p>The progress of the reverse geocoding can be seen in the console. Once the reverse geocoding is completed, view the <code>output_locations</code> using the <code>View</code> function.</p>
-<p>The output location information would look like the following. Note that for some coordinates, OpenStreetMap might not have the town/city information, in such case, those columns will be marked as <code>NA</code>.</p>
+<p>The progress of the reverse geocoding can be seen in the console.
+Once the reverse geocoding is completed, view the
+<code>output_locations</code> using the <code>View</code> function.</p>
+<p>The output location information would look like the following. Note
+that for some coordinates, OpenStreetMap might not have the town/city
+information, in such case, those columns will be marked as
+<code>NA</code>.</p>
 <div class="figure">
 <img src="data:image/png;base64,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" style="width:100.0%" alt />
 <p class="caption">workflow_revgeocoding_locations</p>
 </div>
-<p>Substitute the <code>country_code</code> and <code>country</code> into the corresponding columns of the input list, while the location information is extracted from either <code>town</code> or <code>city</code>.</p>
+<p>Substitute the <code>country_code</code> and <code>country</code>
+into the corresponding columns of the input list, while the location
+information is extracted from either <code>town</code> or
+<code>city</code>.</p>
 <div class="sourceCode" id="cb22"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb22-1"><a href="#cb22-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Add the output location information to the corresponding columns in the input data</span></span>
 <span id="cb22-2"><a href="#cb22-2" aria-hidden="true" tabindex="-1"></a>input_coordinates<span class="sc">$</span><span class="st">&#39;Country code&#39;</span> <span class="ot">&lt;-</span> output_locations<span class="sc">$</span>country_code</span>
 <span id="cb22-3"><a href="#cb22-3" aria-hidden="true" tabindex="-1"></a>input_coordinates<span class="sc">$</span>Country <span class="ot">&lt;-</span> output_locations<span class="sc">$</span>country</span>

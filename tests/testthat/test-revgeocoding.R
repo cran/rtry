@@ -2,6 +2,10 @@ context("Perform reverse geocoding (rtry_revgeocoding)")
 
 
 test_that("basic test", {
+  # following CRAN’s “graceful failure” policy
+  # in case OSM service not working
+  skip_on_cran()
+
   input_coordinate <- head(data_coordinates, 1)
   input_lat_lon <- data.frame(lat = input_coordinate$Latitude, lon = input_coordinate$Longitude)
 
@@ -11,7 +15,6 @@ test_that("basic test", {
   expect_equal(class(output), "data.frame")
   expect_equal(length(output), 5)
   expect_equal(colnames(output), c("full_address", "town", "city", "country", "country_code"))
-  expect_equal(output_address, "Hajdúdorog, Hungary")
 })
 
 
